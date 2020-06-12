@@ -30,7 +30,6 @@ public class DecorGazon {
 		
 		File pierres=new File("src/img/pierres.png");
 		Image imgPierres=new Image(pierres.toURI().toString());
-		//System.out.println(pt.getNumCol() + " " + pt.getNumLignes());
 		for(int x=0 ; x<pt.getNumCol() ; x++) {
 			for (int y=0; y<pt.getNumLignes(); y++) {
 			

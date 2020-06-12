@@ -2,6 +2,8 @@ package modele;
 
 import java.util.Random;
 
+import com.sun.prism.Surface;
+
 public class Personnage {
 
 	private String nom;
@@ -10,11 +12,11 @@ public class Personnage {
 	private int ptDefense;
 	private Arme arme;
 	private int x,y;
-	private int v; // vitesse de deplacement
+	private int v = 30; // vitesse de deplacement
 	private int dx,dy ;// direction 
 	protected Environnement environnement;
-	public static int compteur=0;
 	private String id;
+	private static int compteur;
 
 	public Personnage(int x, int y, Environnement environnement, String nom, int ptVie, int ptAttaque, int ptDefense, Arme arme) {
 		this.nom=nom;
@@ -22,24 +24,11 @@ public class Personnage {
 		this.ptAttaque=ptAttaque;
 		this.ptDefense=ptDefense;
 		this.arme=arme;
-		this.x = ((int)(Math.random()*(192-128)+1)+128);
-		this.y = 2;
-		this.environnement=environnement;	
-	}
-
-	public Personnage(int v,Environnement environnement,int ptVie) {
-		this.ptVie=ptVie;
-		Random random=new Random();
-		int x = random.nextInt(environnement.getLongueur()-1);
-		int y=random.nextInt(environnement.getHauteur()-1);
-		this.x=x;
+		this.x = x;
 		this.y = y;
-		this.v = v;
-		this.environnement=environnement;	
-		this.id="A"+compteur;
-		compteur++;
-//		this.tirerDirection();
-		System.out.println("y" + y + "x" +x);
+		this.environnement=environnement;
+		this.compteur++;
+		this.id ="#p"+compteur;
 	}
 
 	public String getNom() {
@@ -73,64 +62,98 @@ public class Personnage {
 	public  int getY() {
 		return y;
 	}
+	
+	public  int setX(int n) {
+		return x = n;
+	}
 
-	//début de chemin
-	public double getCheminX() {
-		return 32*4;
+	public  int setY(int n) {
+		return y = n;
 	}
 
 	public String getId() {
 		return id;
 	}
-/*
-	private void tirerDirection(){
-		Random random=new Random();
-		int randomInt = random.nextInt(3);
-		dx=randomInt-1;
-		if(dx==0){
-			randomInt=random.nextInt(2)-1;
-			if(randomInt==0){
-				dy=-1;
-			}
-			else{
-				dy=1;
-			}
-		}
-		else{
-			dy=random.nextInt(3)-1;
-		}
-	}
-
-	//permet de savoir si une action probabiliste se réalise 
-	public static boolean reussitProba(double pourcent){
-		double x= Math.random();
-		double pp=pourcent/100;
-		return (x<=pp);
-	}
-
-
-	public void seDeplace(){
-		// 20% de chance de changer de direction
-		// if(Math.random()*100< pourentageRepro )
-
-		int nposX=this.getX()+(this.v*dx);
-		int nposY=this.getY()+(this.v*dy);
-		while(!environnement.dansTerrain(nposX, nposY)){
-			tirerDirection();
-			nposX=this.getX()+(this.v*dx);
-			nposY=this.getY()+(this.v*dy);
-		}
-		this.x=nposX;
-		this.y=nposY;		
-	}
-*/
 	
-	/*public void deplacer() {
-		v = 5; //exemple
-		vue.DecorGazon.surLaRoute(this.x, this.y);
-		
-	}*/
+	public void directionBas() {
+		this.dx = Math.round(this.x/32);
+		this.dy = Math.round((this.y+v)/32);
+		if(this.environnement.surLaRoute(dy, dx)==true) {
+			this.y+=v;
+		}
+	}
+	
+	public void directionDeGaucheADroite() {
+		this.dx = Math.round((this.x+v)/32);
+		this.dy = Math.round(this.y/32);
+		if(this.environnement.surLaRoute(dy, dx)==true) {
+			this.x+=v;
+		}
+	}
+	
+	public void directionDroiteAGauche() {
+		this.dx = Math.round((this.x-v)/32);
+		this.dy = Math.round(this.y/32);
+		if(this.environnement.surLaRoute(dy, dx)==true) {
+			this.x-=v;
+		}
+	}
 
+
+	public void deplacer() {
+		System.out.println("x:" + this.x + " y: " + this.y);
+		if((this.x>=4*32 && this.x<=6*32) && (this.y>=1 && this.y<=3*32)) { //first : down
+			directionBas(); // les parametres sont pour placer aléatoire la perso: x , vertical
+		}
+		else if((this.x>=4*32 && this.x<=15*32) && (this.y>=3*32 && this.y<=5*32)) { //second : left to right
+			directionDeGaucheADroite(); // y : horizontal
+		}
+		else if((this.x>=15*32 && this.x<=17*32) && (this.y>=3*32 && this.y<=7*32)) { //third : down
+			directionBas();
+		}
+		else if ((this.x>=4*32 && this.x<=17*32) && (this.y>=7*32 && this.y<=9*32)) { //fourth : right to left
+			directionDroiteAGauche();
+		}
+		else if ((this.x>=2*32 && this.x<=4*32) && (this.y>=7*32 && this.y<=12*32)) { //fifth : down
+			directionBas();
+		}
+		else if ((this.x>=2*32 && this.x<=13*32) && (this.y>=12*32 && this.y<=14*32)) { //sixth : left to right
+			directionDeGaucheADroite();
+		}
+		else if ((this.x>=13*32 && this.x<=15*32) && (this.y>=12*32 && this.y<=17*32)) { //seventh : down
+			directionBas();
+		}
+		else { //last : right to left
+			if(this.x>=1 && this.x<7*32) {
+				//devant chateau
+				System.out.println("terminé : devant chateau");
+			}
+			else {
+				directionDroiteAGauche();
+			}
+		}
+
+	}
+
+	public boolean estVivant() {
+		if(this.ptVie <=0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	
+	public void meurt() {
+		this.ptVie = 0;
+	}
+	
+	public void setCoord(int x,int y) {
+		this.x=x;
+		this.y=y;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "Personnage [nom=" + nom + ", ptVie=" + ptVie + ", ptAttaque=" + ptAttaque + ", ptDefense=" + ptDefense

@@ -17,8 +17,7 @@ public class PlateauTerrain {
 	public PlateauTerrain() {
 		lireMap();
 	}
-	
-	public char[][] lireMap() {
+	public void lireMap() {
 		try {
 			BufferedReader br=new BufferedReader(new FileReader("src/vue/map.csv"));
 			String line=br.readLine();
@@ -41,17 +40,8 @@ public class PlateauTerrain {
 		catch(Exception e) {
 			e.printStackTrace();
 		}
-		return tab;
 	}
-	
-	public boolean surLaRoute(int x, int y) {
-		if(tab[x][y]!=1) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
+	 
 	public char valCase(int x, int y) {
 		return tab[x][y];
 	}

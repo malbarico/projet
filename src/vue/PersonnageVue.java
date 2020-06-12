@@ -6,31 +6,71 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import modele.*;
 
-public class PersonnageVue {
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
-	private Pane terrainDeJeu;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;  
+
+public class PersonnageVue extends ImageView{
+
+	private Personnage p;
 	
-	public PersonnageVue(Pane terrainDeJeu, Personnage p) {
-		this.terrainDeJeu=terrainDeJeu;
-		creerSprite(p);
+	public PersonnageVue(Personnage p) {
+		super();
+		this.p = p;
+		creerSprite();
 	}
 	
-	public void creerSprite(Personnage a) {
-		Circle r;
-		if( a instanceof Soldat){
-			r= new Circle(3);
-			r.setFill(Color.RED);
+	public void creerSprite() {
+		if( this.p instanceof Soldat){
+			Image image = null;
+			try {
+				image = new Image(new FileInputStream("src/img/soldat.png"));
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			this.setImage(image) ;
+			initialize();
+			}
+		else if(this.p instanceof Monstre){
+			Image image = null;
+			try {
+				image = new Image(new FileInputStream("src/img/monstre.png"));
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			this.setImage(image) ;
+			initialize();
 		}
-		else{
-			r= new Circle(2);
-			r.setFill(Color.WHITE);
+		else {
+			Image image = null;
+			try {
+				image = new Image(new FileInputStream("src/img/geant.png"));
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			this.setImage(image) ;
+			initialize();
 		}
-		// ils ont le meme identifiant
-		r.setId(a.getId());
-		r.setTranslateX(a.getX());
-		r.setTranslateY(a.getY());
-		r.setOnMouseClicked(e-> System.out.println("clic sur acteur"+ e.getSource()));		
-		terrainDeJeu.getChildren().add(r);
+		
+		this.setOnMouseClicked(e-> System.out.println("clic sur acteur"+ e.getSource()));	
+		
+	}
+
+	//deplacer sprite
+	public void seDeplacer() {
+		this.setTranslateX(p.getX());
+		this.setTranslateY(p.getY());
+	}
+	
+	public void initialize() {
+		this.setId(p.getId());
+		this.setFitHeight(32);
+		this.setFitWidth(32);
+		this.setTranslateX(p.getX());
+		this.setTranslateY(p.getY());
 	}
 	
 }

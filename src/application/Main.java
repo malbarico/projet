@@ -19,7 +19,6 @@ public class Main extends Application {
 			loader.load();
 			BorderPane root = loader.getRoot();
 			Scene scene = new Scene(root,640,640);
-			//scene.getStylesheets().add(getClass().getResource("../vue/application.css").toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.show();
 		} catch(Exception e) {
